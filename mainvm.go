@@ -31,7 +31,7 @@ func main() {
 	// Connect to the MQTT Server.
 	err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
-		Address:  "10.3.5.71:1883",
+		Address: common.ip_mosquitto_serv + ":1883",
 		ClientID: []byte("vm-client"),
 	})
 	if err != nil {
@@ -93,7 +93,7 @@ func sensorDataHandler(topicName, message []byte) {
 
 	request := goreq.Request{
 		Method: "POST",
-		Uri: "http://10.3.5.71/cloud_api/web/app_dev.php/api/datasensors?sender=go",
+		Uri: "http://" + common.ip_api_serv + "/cloud_api/web/app_dev.php/api/datasensors?sender=go",
 		Accept: "application/json",
 		ContentType: "application/json",
 		UserAgent: "goreq",

@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"log"
+	//"os/exec"
+	//"log"
 	"os/signal"
 
 	"encoding/json"
@@ -12,29 +12,68 @@ import (
 
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
+	"github.com/franela/goreq"
 	"github.com/tlemaillet/TP_IOT/common"
 )
+
+ 
 
 func main() {
 	// Set up channel on which to send signal notifications.
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, os.Interrupt, os.Kill)
 
-	// send two pings and send the ouput to STDOUT
-	output1, err := exec.Command("ping", "-c", "2", "8.8.8.8").Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("The results are -->  %s\n", output1)
+	//// send two pings and send the ouput to STDOUT
+	//output1, err := exec.Command("ping", "-c", "2", "8.8.8.8").Output()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//log.Printf("The results are -->  %s\n", output1)
+	//
+	//// run the date command and store the output
+	//output2, err := exec.Command("date").Output()
+	//if err != nil {
+	//	log.Print(err)
+	//}
+	//// another wat to print
+	//log.Printf("The date is --> %s ", output2)
 
-	// run the date command and store the output
-	output2, err := exec.Command("date").Output()
-	if err != nil {
-		log.Print(err)
+	sensor := &common.Sensor{
+		DisplayName: "Rasp-Sensor",
+		Vendor: "Raspberry Foundation",
+		Product: "Pi",
+		Version: 3,
 	}
-	// another wat to print
-	log.Printf("The date is --> %s ", output2)
 
+	jsonsensor, err := json.Marshal(sensor)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	request := goreq.Request{
+		Method: "POST",
+		Uri: "http://10.3.5.71/cloud_api/web/app_dev.php/api/sensors?sender=go",
+		Accept: "application/json",
+		ContentType: "application/json",
+		UserAgent: "goreq",
+		Body: string(jsonsensor),
+	}
+	resguid, err := request.Do()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(resguid.Header)
+	fmt.Println(resguid.Body.ToString())
+
+	var guid interface{}
+	resguid.Body.FromJsonTo(guid)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(guid)
 
 	// Create an MQTT Client.
 	cli := client.New(&client.Options{
