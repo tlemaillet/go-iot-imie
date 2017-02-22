@@ -9,7 +9,7 @@ import (
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 	"github.com/franela/goreq"
-	"github.com/tlemaillet/TP_IOT/common"
+	"./common"
 )
 
 func main() {
@@ -31,7 +31,7 @@ func main() {
 	// Connect to the MQTT Server.
 	err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
-		Address: common.ip_mosquitto_serv + ":1883",
+		Address: common.IpMosquitoServ + ":1883",
 		ClientID: []byte("vm-client"),
 	})
 	if err != nil {
@@ -93,7 +93,7 @@ func sensorDataHandler(topicName, message []byte) {
 
 	request := goreq.Request{
 		Method: "POST",
-		Uri: "http://" + common.ip_api_serv + "/cloud_api/web/app_dev.php/api/datasensors?sender=go",
+		Uri: "http://" + common.IpApiServ + "/cloud_api/web/app_dev.php/api/datasensors?sender=go",
 		Accept: "application/json",
 		ContentType: "application/json",
 		UserAgent: "goreq",

@@ -13,7 +13,7 @@ import (
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 	"github.com/franela/goreq"
-	"github.com/tlemaillet/TP_IOT/common"
+	"./common"
 )
 
  
@@ -37,7 +37,6 @@ func main() {
 	//}
 	//// another wat to print
 	//log.Printf("The date is --> %s ", output2)
-
 	sensor := &common.Sensor{
 		DisplayName: "Rasp-Sensor",
 		Vendor: "Raspberry Foundation",
@@ -53,7 +52,7 @@ func main() {
 
 	request := goreq.Request{
 		Method: "POST",
-		Uri: "http://10.3.5.71/cloud_api/web/app_dev.php/api/sensors?sender=go",
+		Uri: "http://" + common.IpApiServ + "/cloud_api/web/app_dev.php/api/sensors?sender=go",
 		Accept: "application/json",
 		ContentType: "application/json",
 		UserAgent: "goreq",
@@ -89,7 +88,7 @@ func main() {
 	// Connect to the MQTT Server.
 	err = cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
-		Address:  "10.3.5.71:1883",
+		Address:  common.IpMosquitoServ + ":1883",
 		ClientID: []byte("rasp-client"),
 	})
 	if err != nil {
