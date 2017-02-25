@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	//"os/exec"
-	//"log"
 	"os/signal"
 
 	"encoding/json"
@@ -47,9 +45,8 @@ func main() {
 	jsonsensor, err := json.Marshal(sensor)
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
-
+	fmt.Println(string(jsonsensor))
 	request := goreq.Request{
 		Method: "POST",
 		Uri: "http://" + common.IpApiServ + "/cloud_api/web/app_dev.php/api/sensors?sender=go",
@@ -63,16 +60,15 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(resguid.Header)
-	fmt.Println(resguid.Body.ToString())
+	//fmt.Println(resguid.Body.ToString())
 
-	var guid interface{}
-	resguid.Body.FromJsonTo(guid)
+	fmt.Println(sensor)
+	err = resguid.Body.FromJsonTo(sensor)
 	if err != nil {
-		fmt.Println(err)
-		return
+		panic(err)
 	}
-	fmt.Println(guid)
+	fmt.Println("pouet")
+	fmt.Println(sensor)
 
 	// Create an MQTT Client.
 	cli := client.New(&client.Options{

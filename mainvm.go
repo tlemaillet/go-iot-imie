@@ -26,7 +26,7 @@ func main() {
 	})
 
 	// Terminate the Client.
-	cli.Terminate()
+	defer cli.Terminate()
 
 	// Connect to the MQTT Server.
 	err := cli.Connect(&client.ConnectOptions{
